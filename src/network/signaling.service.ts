@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-export const socket = io(`ws://${window.location.hostname}:4000`);
+export const socket = io(`wss://${window.location.hostname}:4000`, { rejectUnauthorized: false });
 
 export const registerHost = () => socket.emit('host::register');
 export const registerClient = (answer) => socket.emit('client::register', answer);

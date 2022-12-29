@@ -1,7 +1,11 @@
-import { createServer } from "http";
+import { createServer } from "https";
+import fs from "fs";
 import { Server } from 'socket.io'
 
-const httpServer = createServer();
+const httpServer = createServer({
+    key: fs.readFileSync('./server/cert/key.pem'),
+    cert: fs.readFileSync('./server/cert/cert.pem')
+});
 const io = new Server(httpServer, {
   cors: {
     origin: "*"
@@ -35,6 +39,6 @@ io.on('connection', (socket => {
 
 }));
 
-console.log('Server started at http://localhost:4000')
+console.log('Server started at https://localhost:4000')
 
 httpServer.listen(4000, '0.0.0.0')

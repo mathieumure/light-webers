@@ -15,9 +15,9 @@
         connected = true;
         dataChannel = it;
         dataChannel.onMessage((message) => {
-            console.log('meesage', message)
             messages = [...messages, message]
-        })
+        });
+        detectOrientation(dataChannel.sendMessage)
     });
 
     let sendMessage = (e) => {
