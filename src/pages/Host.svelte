@@ -1,6 +1,7 @@
 <script lang="ts">
     import { serializeOffer } from "../network/serialize.service";
     import {connectHost} from "../network/web-rtc.service";
+    import LightSaber from "../components/LightSaber.svelte";
 
     let connected: boolean = false;
     let qrCodeURL: string = null;
@@ -37,3 +38,5 @@
 <p>alpha (rotation de face): {alpha}</p>
 <p>beta (avant/arrière): {beta}</p>
 <p>gamma (gauche/droite): {gamma}</p>
+
+<LightSaber alpha={alpha} beta={beta} gamma={gamma} />

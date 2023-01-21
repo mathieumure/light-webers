@@ -1,7 +1,6 @@
-export const detectOrientation = (sendFunction) => {
-  sendFunction('Detect orientation')
+export const detectOrientation = (sendMessage) => {
   window.addEventListener('deviceorientation', (event) => {
-    sendFunction(JSON.stringify({
+    sendMessage(JSON.stringify({
       alpha: event.alpha,
       beta: event.beta,
       gamma: event.gamma,
