@@ -16,18 +16,18 @@
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.1.1",
-    "@types/node": "^18.14.1",
+    "@types/node": "^18.16.16",
     "@types/qrcode": "^1.5.0",
-    "@types/three": "^0.149.0",
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.6.0",
-    "nuxt": "^3.2.2",
-    "prettier": "^2.8.4"
+    "@types/three": "^0.152.1",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "nuxt": "^3.5.1",
+    "prettier": "^2.8.8"
   },
   "dependencies": {
-    "qrcode": "^1.5.1",
+    "qrcode": "^1.5.3",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
-    "three": "^0.150.0"
+    "three": "^0.152.2"
   }
 }
