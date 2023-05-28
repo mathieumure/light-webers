@@ -4,17 +4,17 @@ import { connectClient, DataChannelInterface } from '~/app/network/web-rtc.servi
 const route = useRoute();
 type State = {
   connected: boolean;
-  orientationDetected: boolean;
+  orientationDetected: 'stop' | 'start' | 'setup';
   dataChannel: DataChannelInterface | null;
 };
 const state = reactive<State>({
   connected: false,
   dataChannel: null,
-  orientationDetected: false,
+  orientationDetected: 'stop',
 });
 
 const sendOrientation = (event: DeviceOrientationEvent) => {
-  if (state.orientationDetected) {
+  if (state.orientationDetected !== 'stop') {
     state.dataChannel?.sendMessage({
       alpha: event.alpha,
       beta: event.beta,
@@ -36,8 +36,31 @@ onUnmounted(() => {
   window.removeEventListener('deviceorientation', sendOrientation);
 });
 
+const buttonLabel = computed(() => {
+  switch (state.orientationDetected) {
+    case 'stop': return 'setup'
+    case 'setup': return 'start'
+    case 'start': return 'stop'
+  }
+})
+
 const changeOrientationDetection = () => {
-  state.orientationDetected = !state.orientationDetected;
+  switch (state.orientationDetected) {
+    case 'stop': {
+      state.orientationDetected = 'setup';
+
+      break;
+    }
+    case 'setup': {
+      state.orientationDetected = 'start';
+      state.dataChannel?.sendMessage('[[INIT]]')
+      break;
+    }
+    case 'start': {
+      state.orientationDetected = 'stop';
+      break;
+    }
+  }
 };
 </script>
 
@@ -49,7 +72,7 @@ const changeOrientationDetection = () => {
 
     <div v-if="state.connected">
       <button @click="changeOrientationDetection">
-        {{ state.orientationDetected ? 'Stop' : 'Start' }}
+        {{ buttonLabel }}
       </button>
     </div>
   </div>

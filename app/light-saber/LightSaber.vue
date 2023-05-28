@@ -7,6 +7,9 @@ const props = defineProps<{
   alpha: number;
   beta: number;
   gamma: number;
+  initialAlpha: number;
+  initialBeta: number;
+  initialGamma: number;
 }>();
 const container = ref<HTMLDivElement | null>(null);
 
@@ -22,7 +25,7 @@ onMounted(() => {
   renderer.setSize(300, 300);
   container.value?.appendChild(renderer.domElement);
 
-  const geometry = new THREE.BoxGeometry(3, 1, 5);
+  const geometry = new THREE.BoxGeometry(3, 5, 1);
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
@@ -32,9 +35,9 @@ onMounted(() => {
   function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    cube.rotation.x = degToRad(props.beta);
-    cube.rotation.y = degToRad(props.gamma);
-    cube.rotation.z = degToRad(props.alpha);
+    cube.rotation.x = degToRad(props.beta - props.initialBeta);
+    cube.rotation.y = degToRad(props.gamma - props.initialGamma);
+    cube.rotation.z = degToRad(props.alpha - props.initialAlpha);
   }
   animate();
 });

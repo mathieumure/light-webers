@@ -25,6 +25,12 @@ const deviceOrientation = ref<Orientation>({
   beta: 0,
   gamma: 0,
 });
+const initialDeviceOrientation = ref<Orientation>({
+  alpha: 0,
+  beta: 0,
+  gamma: 0,
+});
+
 
 onMounted(async () => {
   state.connected = false;
@@ -36,7 +42,12 @@ onMounted(async () => {
   state.dataChannel = await signaling();
 
   state.dataChannel.onMessage((message) => {
-    deviceOrientation.value = message as Orientation;
+    if (message === '[[INIT]]') {
+      console.log('deviceOrientation.value', deviceOrientation.value)
+      initialDeviceOrientation.value = deviceOrientation.value;
+    } else {
+      deviceOrientation.value = message as Orientation;
+    }
   });
 
   state.connected = true;
@@ -52,7 +63,19 @@ onMounted(async () => {
 
     <p v-if="state.connected">Connected</p>
     <p v-else>Waiting for client to be connected</p>
-    <LightSaber v-bind="deviceOrientation" />
+    <label>
+      Initial alpha:
+      <input type="text" v-model="initialDeviceOrientation.alpha">
+    </label>
+    <label>
+      Initial beta:
+      <input type="text" v-model="initialDeviceOrientation.beta">
+    </label>
+    <label>
+      Initial gamma:
+      <input type="text" v-model="initialDeviceOrientation.gamma">
+    </label>
+    <LightSaber v-bind="deviceOrientation" :initial-alpha="initialDeviceOrientation.alpha" :initial-beta="initialDeviceOrientation.beta" :initial-gamma="initialDeviceOrientation.gamma"/>
     <div v-if="state.connected" />
   </div>
 </template>
