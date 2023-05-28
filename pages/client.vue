@@ -23,6 +23,18 @@ const sendOrientation = (event: DeviceOrientationEvent) => {
   }
 };
 
+const sendMotion = (event: DeviceMotionEvent) => {
+  if (state.orientationDetected !== 'stop') {
+    state.dataChannel?.sendMessage({
+      type: 'motion',
+      accelerationX: event.acceleration?.x,
+      accelerationY: event.acceleration?.y,
+      accelerationZ: event.acceleration?.z,
+      interval: event.interval,
+    });
+  }
+}
+
 onMounted(async () => {
   state.connected = false;
   state.dataChannel = await connectClient(route.query.id as string);
@@ -30,6 +42,7 @@ onMounted(async () => {
   state.connected = true;
 
   window.addEventListener('deviceorientation', sendOrientation);
+  window.addEventListener('devicemotion', sendMotion);
 });
 
 onUnmounted(() => {
@@ -62,6 +75,10 @@ const changeOrientationDetection = () => {
     }
   }
 };
+
+const resetPosition = () => {
+  state.dataChannel?.sendMessage('[[RESET_POSITION]]');
+}
 </script>
 
 <template>
@@ -73,6 +90,9 @@ const changeOrientationDetection = () => {
     <div v-if="state.connected">
       <button @click="changeOrientationDetection">
         {{ buttonLabel }}
+      </button>
+      <button @click="resetPosition">
+        RESET POSITION
       </button>
     </div>
   </div>

@@ -4,12 +4,21 @@ import { onMounted } from 'vue';
 import { degToRad } from '~/app/triggonometry/deg-rad.utils';
 
 const props = defineProps<{
-  alpha: number;
-  beta: number;
-  gamma: number;
-  initialAlpha: number;
-  initialBeta: number;
-  initialGamma: number;
+  orientation: {
+    alpha: number;
+    beta: number;
+    gamma: number;
+  },
+  initialOrientation: {
+    alpha: number;
+    beta: number;
+    gamma: number;
+  },
+  position: {
+    x: number;
+    y: number;
+    z: number;
+  }
 }>();
 const container = ref<HTMLDivElement | null>(null);
 
@@ -35,17 +44,20 @@ onMounted(() => {
   function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    cube.rotation.x = degToRad(props.beta - props.initialBeta);
-    cube.rotation.y = degToRad(props.gamma - props.initialGamma);
-    cube.rotation.z = degToRad(props.alpha - props.initialAlpha);
+    cube.rotation.x = degToRad(props.orientation.beta - props.initialOrientation.beta);
+    cube.rotation.y = degToRad(props.orientation.gamma - props.initialOrientation.gamma);
+    cube.rotation.z = degToRad(props.orientation.alpha - props.initialOrientation.alpha);
+    cube.position.x = props.position.x
+    cube.position.y = props.position.y
+    cube.position.z = props.position.z
   }
   animate();
 });
 </script>
 
 <template>
-  <p>Alpha: {{ props.alpha }}</p>
-  <p>Beta: {{ props.beta }}</p>
-  <p>Gamma: {{ props.gamma }}</p>
+  <p>Alpha: {{ props.orientation.alpha }}</p>
+  <p>Beta: {{ props.orientation.beta }}</p>
+  <p>Gamma: {{ props.orientation.gamma }}</p>
   <div ref="container" />
 </template>
