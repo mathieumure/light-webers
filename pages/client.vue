@@ -4,17 +4,17 @@ import { connectClient, DataChannelInterface } from '~/app/network/web-rtc.servi
 const route = useRoute();
 type State = {
   connected: boolean;
-  orientationDetected: 'stop' | 'start' | 'setup';
+  start: boolean;
   dataChannel: DataChannelInterface | null;
 };
 const state = reactive<State>({
   connected: false,
   dataChannel: null,
-  orientationDetected: 'stop',
+  start: false,
 });
 
 const sendOrientation = (event: DeviceOrientationEvent) => {
-  if (state.orientationDetected !== 'stop') {
+  if (state.start) {
     state.dataChannel?.sendMessage({
       alpha: event.alpha,
       beta: event.beta,
@@ -24,7 +24,7 @@ const sendOrientation = (event: DeviceOrientationEvent) => {
 };
 
 const sendMotion = (event: DeviceMotionEvent) => {
-  if (state.orientationDetected !== 'stop') {
+  if (state.start) {
     state.dataChannel?.sendMessage({
       type: 'motion',
       accelerationX: event.acceleration?.x,
@@ -50,34 +50,15 @@ onUnmounted(() => {
 });
 
 const buttonLabel = computed(() => {
-  switch (state.orientationDetected) {
-    case 'stop': return 'setup'
-    case 'setup': return 'start'
-    case 'start': return 'stop'
-  }
+  return state.start ? 'STOP' : 'START';
 })
 
-const changeOrientationDetection = () => {
-  switch (state.orientationDetected) {
-    case 'stop': {
-      state.orientationDetected = 'setup';
-
-      break;
-    }
-    case 'setup': {
-      state.orientationDetected = 'start';
-      state.dataChannel?.sendMessage('[[INIT]]')
-      break;
-    }
-    case 'start': {
-      state.orientationDetected = 'stop';
-      break;
-    }
-  }
+const toggleStart = () => {
+  state.start = !state.start
 };
 
 const resetPosition = () => {
-  state.dataChannel?.sendMessage('[[RESET_POSITION]]');
+  state.dataChannel?.sendMessage('[[INIT]]');
 }
 </script>
 
@@ -88,11 +69,11 @@ const resetPosition = () => {
     <p v-else>Not connected for now</p>
 
     <div v-if="state.connected">
-      <button @click="changeOrientationDetection">
+      <button @click="toggleStart">
         {{ buttonLabel }}
       </button>
       <button @click="resetPosition">
-        RESET POSITION
+        RESET
       </button>
     </div>
   </div>
